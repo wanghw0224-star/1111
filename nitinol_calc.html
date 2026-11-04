@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>镍钛管弯曲刚度计算器</title>
+<style>
+body{font-family:system-ui;max-width:600px;margin:30px auto;padding:0 20px;}
+.item{margin:12px 0;}
+input{width:220px;padding:6px;font-size:16px;}
+button{padding:8px 16px;background:#2277dd;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:16px;}
+#result{margin-top:20px;padding:12px;background:#f4f7fb;border-radius:8px;font-size:17px;}
+</style>
+</head>
+<body>
+<h2>镍钛管 弯曲刚度 EI 计算器</h2>
+<p>默认 E=45 GPa（超弹性奥氏体镍钛，神经介入海波管常用）</p>
+<div class="item">
+<label>外径 Do (mm)：</label>
+<input id="Do" placeholder="例如 0.42">
+</div>
+<div class="item">
+<label>内径 Di (mm)：</label>
+<input id="Di" placeholder="例如 0.30">
+</div>
+<div class="item">
+<label>弹性模量 E (GPa)：</label>
+<input id="E" value="45">
+</div>
+<button onclick="calc()">计算弯曲刚度</button>
+<div id="result"></div>
+
+<script>
+function calc(){
+  let Do = parseFloat(document.getElementById('Do').value);
+  let Di = parseFloat(document.getElementById('Di').value);
+  let E = parseFloat(document.getElementById('E').value);
+  if(isNaN(Do)||isNaN(Di)||isNaN(E)||Do<=Di){
+    document.getElementById('result').innerText="输入错误！外径必须大于内径";
+    return;
+  }
+  // 单位转换：mm → m，GPa → Pa
+  const pi = Math.PI;
+  let Do_m = Do / 1000;
+  let Di_m = Di / 1000;
+  let E_Pa = E * 1e9;
+  let I = pi * (Do_m**4 - Di_m**4) / 64;
+  let EI = E_Pa * I;
+  document.getElementById('result').innerHTML = `
+  截面惯性矩 I = ${I.toExponential(4)} m⁴<br>
+  弯曲刚度 EI = ${EI.toExponential(4)} N·m²
+  `
+}
+</script>
+</body>
+</html>
